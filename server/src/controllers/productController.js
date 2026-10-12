@@ -2,6 +2,7 @@ import db from '../db.js';
 import { validationError } from '../utils/httpError.js';
 import { findOrFail } from '../utils/findOrFail.js';
 import { getProductDetail } from '../services/productService.js';
+import { toIsoUtc } from '../utils/dates.js';
 
 // SKUs must be unique. When updating, ignore the product being edited.
 async function ensureSkuIsFree(sku, ignoreProductId = null) {
@@ -15,10 +16,14 @@ async function ensureSkuIsFree(sku, ignoreProductId = null) {
   }
 }
 
-// GET /api/products
+// GET /api/products  (each product includes published_at, or null if never published)
 export async function listProducts(req, res) {
-  const products = await db('products').orderBy('name');
-  res.json(products);
+  const products = await db('products')
+    .leftJoin('passport_snapshots', 'passport_snapshots.product_id', 'products.id')
+    .select('products.*', 'passport_snapshots.published_at')
+    .orderBy('products.name');
+
+  res.json(products.map((product) => ({ ...product, published_at: toIsoUtc(product.published_at) })));
 }
 
 // GET /api/products/:id  → the product with its ordered stages and certificates
