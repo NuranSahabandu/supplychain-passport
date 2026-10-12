@@ -108,3 +108,90 @@ DELETE {{api}}/suppliers/1
 
 ### Get a supplier that doesn't exist  → 404
 GET {{api}}/suppliers/999
+
+### ===== Certifications =====
+### (Product id 1 = EcoGrip Pro after `npm run db:reset`. Check with GET {{api}}/products if unsure.)
+
+### Test 1 — AT-04: past expiry → status "Expired"
+POST {{api}}/products/1/certifications
+Content-Type: application/json
+
+{
+  "name": "Old Audit (demo record)",
+  "issuer": "Example Audit Group",
+  "certificate_number": "DEMO-OLD-010",
+  "issued_at": "2020-01-01",
+  "expires_at": "2021-01-01"
+}
+
+### Test 2 — AT-05: future issue date → status "Not yet valid"
+POST {{api}}/products/1/certifications
+Content-Type: application/json
+
+{
+  "name": "Planned Certificate (demo record)",
+  "issuer": "Example Certification Body",
+  "certificate_number": "DEMO-PLAN-011",
+  "issued_at": "2030-01-01",
+  "expires_at": ""
+}
+
+### Test 3 — no expiry date → status "No expiry provided"
+POST {{api}}/products/1/certifications
+Content-Type: application/json
+
+{
+  "name": "Supplier Declaration (demo record)",
+  "issuer": "GreenFibre Ltd",
+  "certificate_number": "DEMO-DECL-012",
+  "issued_at": "2026-01-01"
+}
+
+### Test 4 — AT-06: expiry before issue → 422
+POST {{api}}/products/1/certifications
+Content-Type: application/json
+
+{
+  "name": "Broken Dates",
+  "issuer": "X",
+  "certificate_number": "X-1",
+  "issued_at": "2026-05-01",
+  "expires_at": "2026-01-01"
+}
+
+### Test 5 — impossible date → 422
+POST {{api}}/products/1/certifications
+Content-Type: application/json
+
+{
+  "name": "Bad Date",
+  "issuer": "X",
+  "certificate_number": "X-2",
+  "issued_at": "2026-02-30"
+}
+
+### Test 6 — product that doesn't exist → 404
+POST {{api}}/products/999/certifications
+Content-Type: application/json
+
+{
+  "name": "Orphan",
+  "issuer": "X",
+  "certificate_number": "X-3",
+  "issued_at": "2026-01-01"
+}
+
+### Test 7 — update (REPLACE 4 with the id from Test 1) → 200, status recalculated
+PUT {{api}}/certifications/4
+Content-Type: application/json
+
+{
+  "name": "Old Audit (demo record)",
+  "issuer": "Example Audit Group",
+  "certificate_number": "DEMO-OLD-010",
+  "issued_at": "2020-01-01",
+  "expires_at": "2030-01-01"
+}
+
+### Test 8 — delete (REPLACE 4 with the id from Test 1) → 204; send again → 404
+DELETE {{api}}/certifications/4
