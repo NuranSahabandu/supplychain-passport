@@ -1,6 +1,7 @@
 import db from '../db.js';
 import { validationError } from '../utils/httpError.js';
 import { findOrFail } from '../utils/findOrFail.js';
+import { getProductDetail } from '../services/productService.js';
 
 // SKUs must be unique. When updating, ignore the product being edited.
 async function ensureSkuIsFree(sku, ignoreProductId = null) {
@@ -20,9 +21,9 @@ export async function listProducts(req, res) {
   res.json(products);
 }
 
-// GET /api/products/:id
+// GET /api/products/:id  → the product with its ordered stages and certificates
 export async function getProduct(req, res) {
-  const product = await findOrFail('products', req.params.id, 'Product');
+  const product = await getProductDetail(req.params.id);
   res.json(product);
 }
 
