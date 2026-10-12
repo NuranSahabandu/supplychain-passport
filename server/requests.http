@@ -1,0 +1,66 @@
+### SupplyChain Passport — manual API tests
+### Open in VS Code with the "REST Client" extension and click "Send Request" above each block.
+
+@api = http://localhost:4000/api
+
+### Health check
+GET {{api}}/health
+
+### List products
+GET {{api}}/products
+
+### Get one product
+GET {{api}}/products/1
+
+### Get a product that doesn't exist  → 404
+GET {{api}}/products/999
+
+### AT-01: create a valid product  → 201
+POST {{api}}/products
+Content-Type: application/json
+
+{
+  "name": "Test Glove",
+  "sku": "tg-2001",
+  "category": "Protective Gloves",
+  "description": "A product created while testing the API.",
+  "primary_material": "Cotton",
+  "manufacture_country": "Sri Lanka",
+  "image_url": ""
+}
+
+### AT-02: duplicate SKU  → 422
+POST {{api}}/products
+Content-Type: application/json
+
+{
+  "name": "Copy of EcoGrip",
+  "sku": "EGP-1001",
+  "category": "Protective Gloves",
+  "description": "Should be rejected.",
+  "primary_material": "Nitrile",
+  "manufacture_country": "Sri Lanka"
+}
+
+### Missing required fields  → 422 with an error per field
+POST {{api}}/products
+Content-Type: application/json
+
+{}
+
+### Update a product (replace the id with the one from the create response)  → 200
+PUT {{api}}/products/2
+Content-Type: application/json
+
+{
+  "name": "Test Glove v2",
+  "sku": "TG-2001",
+  "category": "Protective Gloves",
+  "description": "Updated description.",
+  "primary_material": "Cotton",
+  "manufacture_country": "Sri Lanka",
+  "image_url": "https://example.com/glove.png"
+}
+
+### Delete a product  → 204
+DELETE {{api}}/products/2
