@@ -1,6 +1,7 @@
 import express from 'express';
 import db from './db.js';
 import productRoutes from './routes/productRoutes.js';
+import supplierRoutes from './routes/supplierRoutes.js';
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -16,6 +17,7 @@ app.get('/api/health', async (req, res) => {
 
 // Feature routes
 app.use('/api/products', productRoutes);
+app.use('/api/suppliers', supplierRoutes);
 
 // These two must come LAST: they catch whatever the routes above didn't handle
 app.use(notFoundHandler);

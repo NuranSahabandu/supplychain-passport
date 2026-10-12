@@ -22,7 +22,7 @@ export async function listProducts(req, res) {
 
 // GET /api/products/:id
 export async function getProduct(req, res) {
-  const product = await findOrFail(req.params.id);
+  const product = await findOrFail('products', req.params.id, 'Product');
   res.json(product);
 }
 
@@ -31,18 +31,18 @@ export async function createProduct(req, res) {
   await ensureSkuIsFree(req.body.sku);
 
   const [newId] = await db('products').insert(req.body);
-  const product = await findOrFail(newId);
+  const product = await findOrFail('products', newId, 'Product');
 
   res.status(201).json(product); // 201 = Created
 }
 
 // PUT /api/products/:id
 export async function updateProduct(req, res) {
-  const product = await findOrFail(req.params.id);
+  const product = await findOrFail('products', req.params.id, 'Product');
   await ensureSkuIsFree(req.body.sku, product.id);
 
   await db('products').where({ id: product.id }).update(req.body);
-  const updated = await findOrFail(product.id);
+  const updated = await findOrFail('products', product.id, 'Product');
 
   res.json(updated);
 }
@@ -50,7 +50,7 @@ export async function updateProduct(req, res) {
 // DELETE /api/products/:id
 // Stages, certificates and the published snapshot are removed too (ON DELETE CASCADE).
 export async function deleteProduct(req, res) {
-  const product = await findOrFail(req.params.id);
+  const product = await findOrFail('products', req.params.id, 'Product');
   await db('products').where({ id: product.id }).del();
   res.status(204).end(); // 204 = success, nothing to send back
 }

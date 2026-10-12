@@ -64,3 +64,47 @@ Content-Type: application/json
 
 ### Delete a product  → 204
 DELETE {{api}}/products/2
+
+### ============================================================
+### Suppliers
+### ============================================================
+
+### List suppliers (each one includes stage_count)  → 200
+GET {{api}}/suppliers
+
+### Create a supplier  → 201
+POST {{api}}/suppliers
+Content-Type: application/json
+
+{
+  "name": "Test Supplier",
+  "country": "Sri Lanka",
+  "location": "Colombo",
+  "contact": "test@example.com"
+}
+
+### Missing required fields  → 422 with an error for name and country
+POST {{api}}/suppliers
+Content-Type: application/json
+
+{}
+
+### Update a supplier (replace the id with the one from the create response)  → 200
+PUT {{api}}/suppliers/5
+Content-Type: application/json
+
+{
+  "name": "Test Supplier v2",
+  "country": "Sri Lanka",
+  "location": "",
+  "contact": "updated@example.com"
+}
+
+### Delete an unused supplier (use the id from the create response)  → 204
+DELETE {{api}}/suppliers/5
+
+### Delete a supplier used in a stage (pick an id with stage_count > 0 from the list)  → 409
+DELETE {{api}}/suppliers/1
+
+### Get a supplier that doesn't exist  → 404
+GET {{api}}/suppliers/999
