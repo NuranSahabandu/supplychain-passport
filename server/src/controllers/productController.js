@@ -1,19 +1,6 @@
 import db from '../db.js';
-import { notFound, validationError } from '../utils/httpError.js';
-
-// Find one product by id, or throw a 404 if it doesn't exist.
-async function findProductOrFail(id) {
-  // An id like "abc" can never match a product, so treat it as "not found"
-  if (!Number.isInteger(Number(id))) {
-    throw notFound('Product not found');
-  }
-
-  const product = await db('products').where({ id: Number(id) }).first();
-  if (!product) {
-    throw notFound('Product not found');
-  }
-  return product;
-}
+import { validationError } from '../utils/httpError.js';
+import { findOrFail } from '../utils/findOrFail.js';
 
 // SKUs must be unique. When updating, ignore the product being edited.
 async function ensureSkuIsFree(sku, ignoreProductId = null) {
@@ -35,7 +22,7 @@ export async function listProducts(req, res) {
 
 // GET /api/products/:id
 export async function getProduct(req, res) {
-  const product = await findProductOrFail(req.params.id);
+  const product = await findOrFail(req.params.id);
   res.json(product);
 }
 
@@ -44,18 +31,18 @@ export async function createProduct(req, res) {
   await ensureSkuIsFree(req.body.sku);
 
   const [newId] = await db('products').insert(req.body);
-  const product = await findProductOrFail(newId);
+  const product = await findOrFail(newId);
 
   res.status(201).json(product); // 201 = Created
 }
 
 // PUT /api/products/:id
 export async function updateProduct(req, res) {
-  const product = await findProductOrFail(req.params.id);
+  const product = await findOrFail(req.params.id);
   await ensureSkuIsFree(req.body.sku, product.id);
 
   await db('products').where({ id: product.id }).update(req.body);
-  const updated = await findProductOrFail(product.id);
+  const updated = await findOrFail(product.id);
 
   res.json(updated);
 }
@@ -63,7 +50,7 @@ export async function updateProduct(req, res) {
 // DELETE /api/products/:id
 // Stages, certificates and the published snapshot are removed too (ON DELETE CASCADE).
 export async function deleteProduct(req, res) {
-  const product = await findProductOrFail(req.params.id);
+  const product = await findOrFail(req.params.id);
   await db('products').where({ id: product.id }).del();
   res.status(204).end(); // 204 = success, nothing to send back
 }
