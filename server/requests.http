@@ -280,3 +280,59 @@ Content-Type: application/json
 {
   "stage_ids": [1, 2, 3, 4]
 }
+
+### ===== Passport =====
+### Run in order after `npm run db:reset`.
+
+### Step 1 — AT-07: not published yet → 404
+GET {{api}}/public/passports/EGP-1001
+
+### Step 2 — AT-11: unknown SKU → same 404
+GET {{api}}/public/passports/NOPE-0000
+
+### Step 3 — admin preview (draft) → is_published: false
+GET {{api}}/products/1/passport-preview
+
+### Step 4 — AT-08: publish
+POST {{api}}/products/1/publish
+
+### Step 5 — public passport now works (no login)
+GET {{api}}/public/passports/EGP-1001
+
+### Step 6 — AT-09 part 1: edit the product after publishing
+PUT {{api}}/products/1
+Content-Type: application/json
+
+{
+  "name": "EcoGrip Pro (2nd edition)",
+  "sku": "EGP-1001",
+  "category": "Protective Gloves",
+  "description": "Reusable protective work glove. Updated description.",
+  "primary_material": "Recycled polyester and nitrile",
+  "manufacture_country": "Sri Lanka"
+}
+
+### Step 7 — AT-09 part 2 (Scenario F): correct a supplier's name
+PUT {{api}}/suppliers/2
+Content-Type: application/json
+
+{
+  "name": "LankaTex Mills (Pvt) Ltd",
+  "country": "Sri Lanka",
+  "location": "Gampaha"
+}
+
+### Step 8 — AT-09 check: public passport is UNCHANGED
+GET {{api}}/public/passports/EGP-1001
+
+### Step 9 — preview shows the new data + has_unpublished_changes: true
+GET {{api}}/products/1/passport-preview
+
+### Step 10 — AT-10: republish
+POST {{api}}/products/1/publish
+
+### Step 11 — AT-10 check: public passport now shows the changes
+GET {{api}}/public/passports/EGP-1001
+
+### Step 12 — product list shows published_at
+GET {{api}}/products
