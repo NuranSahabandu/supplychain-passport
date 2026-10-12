@@ -4,6 +4,7 @@ import productRoutes from './routes/productRoutes.js';
 import supplierRoutes from './routes/supplierRoutes.js';
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
 import certificationRoutes from './routes/certificationRoutes.js';
+import stageRoutes from './routes/stageRoutes.js';
 
 const app = express();
 
@@ -23,6 +24,9 @@ app.use('/api/suppliers', supplierRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/suppliers', supplierRoutes);
 app.use('/api', certificationRoutes);
+
+app.use('/api', certificationRoutes);
+app.use('/api', stageRoutes);
 
 // These two must come LAST: they catch whatever the routes above didn't handle
 app.use(notFoundHandler);

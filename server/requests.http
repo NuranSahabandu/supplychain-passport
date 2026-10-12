@@ -195,3 +195,88 @@ Content-Type: application/json
 
 ### Test 8 — delete (REPLACE 4 with the id from Test 1) → 204; send again → 404
 DELETE {{api}}/certifications/4
+
+### ===== Stages =====
+### After `npm run db:reset`: product 1 = EcoGrip Pro, stages 1–4, suppliers 1–4.
+
+### Test 1 — full product detail (stages + certificates)
+GET {{api}}/products/1
+
+### Test 2 — add a stage → goes to the end (position 5)
+POST {{api}}/products/1/stages
+Content-Type: application/json
+
+{
+  "stage_name": "Quality inspection",
+  "supplier_id": "3"
+}
+
+### Test 3 — missing name and supplier → 422
+POST {{api}}/products/1/stages
+Content-Type: application/json
+
+{
+  "stage_name": "",
+  "supplier_id": ""
+}
+
+### Test 4 — supplier that doesn't exist → 422
+POST {{api}}/products/1/stages
+Content-Type: application/json
+
+{
+  "stage_name": "Packing",
+  "supplier_id": 999
+}
+
+### Test 5 — reorder: move "Quality inspection" (id 5) before "Distribution" (id 4)
+PUT {{api}}/products/1/stages/order
+Content-Type: application/json
+
+{
+  "stage_ids": [1, 2, 3, 5, 4]
+}
+
+### Test 6 — invalid reorder: a stage missing → 422
+PUT {{api}}/products/1/stages/order
+Content-Type: application/json
+
+{
+  "stage_ids": [1, 2, 3]
+}
+
+### Test 7 — invalid reorder: duplicate id → 422
+PUT {{api}}/products/1/stages/order
+Content-Type: application/json
+
+{
+  "stage_ids": [1, 1, 2, 3, 4]
+}
+
+### Test 8 — edit a stage's name (Scenario F: correcting the journey)
+PUT {{api}}/stages/2
+Content-Type: application/json
+
+{
+  "stage_name": "Fabric weaving",
+  "supplier_id": 2
+}
+
+### Test 9 — delete stage 5 → the gap closes (send twice: second → 404)
+DELETE {{api}}/stages/5
+
+### Test 10 — full reversal (the hardest case for the unique constraint)
+PUT {{api}}/products/1/stages/order
+Content-Type: application/json
+
+{
+  "stage_ids": [4, 3, 2, 1]
+}
+
+### Test 11 — back to the original order
+PUT {{api}}/products/1/stages/order
+Content-Type: application/json
+
+{
+  "stage_ids": [1, 2, 3, 4]
+}
