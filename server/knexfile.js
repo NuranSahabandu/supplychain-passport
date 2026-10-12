@@ -14,6 +14,15 @@ export default {
     dateStrings: true,
     timezone: 'Z', // treat stored times as UTC
   },
+
+    pool: {
+    // Every new database connection works in UTC, whatever timezone the computer uses.
+    // So timestamps like published_at are stored and read back as UTC everywhere.
+    afterCreate: (connection, done) => {
+      connection.query("SET time_zone = '+00:00'", (error) => done(error, connection));
+      },
+    },
+
   migrations: { directory: './src/db/migrations', extension: 'mjs', loadExtensions: ['.mjs'] },
   seeds: { directory: './src/db/seeds', extension: 'mjs', loadExtensions: ['.mjs'] },
 };
