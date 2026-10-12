@@ -1,0 +1,135 @@
+/* Admin layout: mobile first, the sidebar layout switches on at 900px. */
+
+.admin {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Top bar ---------- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: var(--surface);
+}
+
+.topbar-title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.topbar-tag {
+  margin-left: 0.5rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+/* The focus outline is purple by default, which would vanish on the purple bar */
+.topbar :focus-visible {
+  outline-color: var(--accent);
+}
+
+/* ---------- Demo warning ---------- */
+
+.demo-banner {
+  margin: 0;
+  padding: 0.5rem 1rem;
+  background: #fff8eb; /* light amber: keeps --warning text at 4.87:1 contrast */
+  border-bottom: 1px solid var(--warning);
+  color: var(--warning);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* ---------- Sidebar + main area ---------- */
+
+.admin-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hidden on small screens until the Menu button opens it */
+.sidebar {
+  display: none;
+  background: var(--surface-soft);
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar.is-open {
+  display: block;
+}
+
+.sidebar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.sidebar a {
+  display: block;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid transparent; /* reserves space so the active border doesn't shift text */
+  color: var(--text);
+  text-decoration: none;
+}
+
+.sidebar a:hover {
+  background: var(--surface);
+}
+
+/* NavLink adds .active to the current page. Bold + border, so it's not shown by colour alone. */
+.sidebar a.active {
+  border-left-color: var(--primary);
+  background: var(--surface);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+/* White main area so --muted text keeps AA contrast (it's 4.42:1 on --surface-soft) */
+.admin-main {
+  flex: 1;
+  min-width: 0; /* lets wide tables scroll inside instead of stretching the page */
+  background: var(--surface);
+}
+
+.admin-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+/* ---------- Desktop ---------- */
+
+@media (min-width: 900px) {
+  .menu-button {
+    display: none;
+  }
+
+  .admin-body {
+    flex-direction: row;
+  }
+
+  /* Always shown on desktop, whatever the menu state is */
+  .sidebar {
+    display: block;
+    flex: 0 0 240px;
+    border-bottom: none;
+    border-right: 1px solid var(--border);
+  }
+
+  .admin-content {
+    padding: 2rem;
+  }
+}
