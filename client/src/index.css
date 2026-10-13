@@ -433,3 +433,62 @@ textarea {
   display: flex;
   gap: 0.5rem;
 }
+
+/* ===== Supply-chain timeline ===== */
+.stage-form {
+  margin-bottom: 1.5rem;
+}
+.timeline {
+  list-style: none; /* we draw our own numbers */
+  margin: 0;
+  padding: 0;
+}
+.timeline-item {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0 1rem 3.5rem;
+  border-bottom: 1px solid var(--border);
+}
+/* the vertical line joining the numbered markers */
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 1.2rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent);
+}
+.timeline-item:first-child::before {
+  top: 50%;
+}
+.timeline-item:last-child::before {
+  bottom: 50%;
+}
+.timeline-number {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--primary-dark); /* dark text on teal, as the design guide asks */
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+.timeline-content {
+  flex: 1;
+  min-width: 180px;
+}
+.timeline-content h3 {
+  margin: 0;
+}
+.timeline-content p {
+  margin: 0.25rem 0 0;
+}
