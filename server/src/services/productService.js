@@ -13,7 +13,8 @@ export async function getProductDetail(productId) {
 
   const certifications = await db('certifications')
     .where({ product_id: product.id })
-    .orderBy('issued_at');
+    .orderBy('issued_at')
+    .orderBy('id'); // same issue date → oldest record first, so the order never flips
 
   return {
     ...product,

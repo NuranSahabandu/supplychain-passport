@@ -25,10 +25,10 @@ export default function ProductDetailPage() {
   if (loading) return <LoadingState label="Loading product…" />;
   if (error) return <ErrorState error={error} onRetry={error.status === 404 ? undefined : reload} />;
 
-  return <ProductDetail product={product} onProductChange={setData} onReload={reload} />;
+  return <ProductDetail product={product} onProductChange={setData} />;
 }
 
-function ProductDetail({ product, onProductChange, onReload }) {
+function ProductDetail({ product, onProductChange}) {
   const navigate = useNavigate();
   const location = useLocation();
   const successMessage = location.state?.message;
@@ -110,7 +110,7 @@ function ProductDetail({ product, onProductChange, onReload }) {
       <section aria-label={TABS.find((tab) => tab.key === activeTab).label}>
         {activeTab === 'overview' && <OverviewTab product={product} />}
         {activeTab === 'supply-chain' && <SupplyChainTab product={product} onProductChange={onProductChange} />}
-        {activeTab === 'certifications' && <CertificationsTab product={product} onReload={onReload} />}
+        {activeTab === 'certifications' && <CertificationsTab product={product} onProductChange={onProductChange} />}
         {activeTab === 'passport' && <PassportTab product={product} />}
       </section>
     </>
