@@ -419,3 +419,17 @@ textarea {
 .description {
   white-space: pre-line; /* keep the line breaks the admin typed */
 }
+
+/* ===== Suppliers ===== */
+/* .card has no margin of its own, so the open form would touch the list below it */
+.supplier-form {
+  margin-bottom: 1.5rem;
+}
+.supplier-form h2 {
+  margin-top: 0;
+}
+/* Edit / Delete side by side in a table cell */
+.table-actions {
+  display: flex;
+  gap: 0.5rem;
+}
