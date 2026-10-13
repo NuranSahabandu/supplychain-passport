@@ -69,8 +69,13 @@ function ProductForm({ product }) {
         ? await api.put(`/products/${product.id}`, values)
         : await api.post('/products', values);
 
-      const message = isEditing ? `“${saved.name}” was updated.` : `“${saved.name}” was created.`;
-      navigate('/admin/products', { state: { message } });
+      // After creating: back to the list (the new product is visible there).
+      // After editing: back to that product's page.
+      if (isEditing) {
+        navigate(`/admin/products/${saved.id}`, { state: { message: `“${saved.name}” was updated.` } });
+      } else {
+        navigate('/admin/products', { state: { message: `“${saved.name}” was created.` } });
+      }
     } catch (err) {
       // 422 → messages under each field; anything else → one message at the top
       setFieldErrors(err.fieldErrors);

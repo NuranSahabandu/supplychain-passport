@@ -363,3 +363,59 @@ textarea {
   gap: 0.75rem;
   margin-top: 1.5rem;
 }
+
+/* ===== Product detail ===== */
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto; /* on narrow phones the tabs scroll sideways instead of overflowing */
+  border-bottom: 2px solid var(--border);
+  margin: 1.5rem 0 1rem;
+}
+.tab {
+  padding: 0.75rem 1rem;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--muted);
+  font-weight: 600;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px; /* sit on top of the grey line */
+}
+.tab:hover {
+  color: var(--primary);
+}
+.tab.is-active {
+  color: var(--primary);
+  border-bottom-color: var(--primary); /* not colour alone: the underline marks it too */
+}
+.overview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+.overview-image {
+  width: 200px;
+  max-width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+.detail-list {
+  flex: 1;
+  min-width: 240px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+.detail-list dt {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+.detail-list dd {
+  margin: 0.25rem 0 0;
+  font-weight: 600;
+}
+.description {
+  white-space: pre-line; /* keep the line breaks the admin typed */
+}
