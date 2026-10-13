@@ -355,3 +355,11 @@ textarea {
   border-color: var(--muted);
   color: var(--muted);
 }
+
+/* Row of buttons under a form (Save / Cancel) */
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
