@@ -520,6 +520,18 @@ textarea {
   flex: 1;
   min-width: 200px;
 }
+/* QR code under the public link. Browsers give <figure> a 40px side margin by default. */
+.qr-code {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+}
+.qr-code figcaption {
+  font-size: 0.875rem;
+  color: var(--muted); /* on the white card: 4.97:1 */
+}
 .passport {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -534,6 +546,11 @@ textarea {
   padding: 1.5rem;
   background: var(--primary);
   color: var(--surface);
+}
+/* The text grows to fill the row, and drops under the image when it can't get 12rem (phones) */
+.passport-hero > div {
+  flex: 1 1 12rem;
+  min-width: 0;
 }
 .passport-hero .passport-title {
   color: var(--surface); /* white on purple: 10:1 contrast */
@@ -582,6 +599,12 @@ textarea {
 .passport-certificate p {
   margin: 0.25rem 0 0;
 }
+/* "View evidence" is the only link customers tap here: give it a 44px-tall tap area */
+.passport-certificate a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
 .passport-footer {
   padding: 1rem 1.5rem;
   background: var(--surface-soft);
@@ -621,4 +644,12 @@ textarea {
   max-width: 560px;
   margin: 2rem auto;
   text-align: center;
+}
+/* Phones: less inner padding so the text column isn't squeezed (about 278px → 294px at 360px wide) */
+@media (max-width: 599px) {
+  .passport-hero,
+  .passport-section,
+  .passport-footer {
+    padding: 1rem;
+  }
 }

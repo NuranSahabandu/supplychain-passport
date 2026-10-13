@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import { api } from '../../api/client.js';
 import { useFetch } from '../../hooks/useFetch.js';
 import { formatDateTime } from '../../utils/format.js';
@@ -86,10 +87,26 @@ export default function PassportTab({ product }) {
   );
 }
 
-// The shareable public URL, with Copy and Open buttons.
+// The shareable public URL, with Copy and Open buttons and a QR code of the same URL.
 function PublicLink({ path }) {
   const url = `${window.location.origin}${path}`;
+  const sku = decodeURIComponent(path.split('/').pop()); // path is '/passport/EGP-1001'
   const [copyMessage, setCopyMessage] = useState('');
+  const qrRef = useRef(null); // the QR's <svg> element, needed for the download
+
+  // Save the QR exactly as drawn: turn the <svg> into text, wrap it in a file,
+  // and click a temporary download link pointing at that file.
+  function downloadQrCode() {
+    const svgText = new XMLSerializer().serializeToString(qrRef.current);
+    const fileUrl = URL.createObjectURL(new Blob([svgText], { type: 'image/svg+xml' }));
+
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = `passport-${sku}.svg`;
+    link.click();
+
+    URL.revokeObjectURL(fileUrl); // free the memory; the download has already started
+  }
 
   async function copyLink() {
     try {
@@ -117,6 +134,24 @@ function PublicLink({ path }) {
       <p className="field-hint" aria-live="polite">
         {copyMessage}
       </p>
+
+      {/* Dark-on-white with a 4-module quiet zone (marginSize) so phone cameras can read it */}
+      <figure className="qr-code">
+        <QRCodeSVG
+          ref={qrRef}
+          value={url}
+          size={160}
+          bgColor="#FFFFFF"
+          fgColor="#2E1E46"
+          marginSize={4}
+          role="img"
+          aria-label={`QR code linking to the public passport for ${sku}`}
+        />
+        <figcaption>Scan to open the public passport</figcaption>
+        <button type="button" className="btn btn-secondary btn-small" onClick={downloadQrCode}>
+          Download QR code
+        </button>
+      </figure>
     </div>
   );
 }
